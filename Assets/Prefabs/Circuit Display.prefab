@@ -686,6 +686,7 @@ MonoBehaviour:
   shiftRegister8Gate: {fileID: 5157686179906537304, guid: 1c6e454ea73060e4eb600e8a41cfb644,
     type: 3}
   dffGate: {fileID: 5157686179906537304, guid: 43443455bf2a8c14f81f8c5c50584d50, type: 3}
+  fa1Gate: {fileID: 5157686179906537304, guid: 61db90179bfc20c42b2fb45011ef6b7e, type: 3}
   subcircuitPrefab: {fileID: 7352371858924536402}
 --- !u!1 &7352371859111254391
 GameObject:

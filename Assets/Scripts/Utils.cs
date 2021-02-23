@@ -21,6 +21,8 @@ namespace Utils {
         ShiftRegister8 = 1 << 8,
         DFF = 1 << 9,
 
+        FA1 = 1 << 10,
+
     }
 }
 

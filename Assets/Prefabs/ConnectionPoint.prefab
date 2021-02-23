@@ -87,6 +87,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62bbb03745a40064abbf6baaa0371f39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  connectionType: 0
+  connectionIndex: 0
   wireBuilderPrefab: {fileID: 5787817777697456852, guid: d95833e70456d3b4c8b04764d9d158b2,
     type: 3}
   onColor: {r: 1, g: 1, b: 1, a: 1}

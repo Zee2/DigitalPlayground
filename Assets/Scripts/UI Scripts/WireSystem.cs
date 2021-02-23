@@ -83,13 +83,13 @@ public class WireSystem : MonoBehaviour
             var vector = endPos - startPos;
             var projected = Vector3.ProjectOnPlane(vector, transform.forward);
 
-            currentWireSegments[i].position = (startPos + endPos) / 2.0f;
+            currentWireSegments[i].localPosition = transform.parent.InverseTransformPoint((startPos + endPos) / 2.0f);
 
             var scaledVector = transform.parent.InverseTransformVector(vector);
 
             currentWireSegments[i].sizeDelta = new Vector2(Vector3.Magnitude(scaledVector), 50);
 
-            currentWireSegments[i].localRotation = Quaternion.Euler(0, 0, Vector2.SignedAngle(Vector2.right, projected));
+            currentWireSegments[i].localRotation = Quaternion.Euler(0, 0, Vector2.SignedAngle(Vector2.right, scaledVector));
         }
 
         

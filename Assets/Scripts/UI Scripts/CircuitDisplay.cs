@@ -27,6 +27,7 @@ public class CircuitDisplay : CircuitDevice
     public GameObject shiftRegister4Gate;
     public GameObject shiftRegister8Gate;
     public GameObject dffGate;
+    public GameObject fa1Gate;
     public GameObject subcircuitPrefab;
     public Circuit circuitSimObject;
 
@@ -169,6 +170,9 @@ public class CircuitDisplay : CircuitDevice
             case Utils.LogicType.DFF:
                 prefabToUse = dffGate;
                 break;
+            case Utils.LogicType.FA1:
+                prefabToUse = fa1Gate;
+                break;
             default:
                 prefabToUse = null;
                 break;
@@ -237,6 +241,9 @@ public class CircuitDisplay : CircuitDevice
                 break;
             case Utils.LogicType.DFF:
                 newSimGate = new DFF("replaceMe");
+                break;
+            case Utils.LogicType.FA1:
+                newSimGate = new Adder("replaceMe", 1);
                 break;
             default:
                 Debug.LogError("Unknown circuit device type, object name: " + circuitDevice.gameObject.name);

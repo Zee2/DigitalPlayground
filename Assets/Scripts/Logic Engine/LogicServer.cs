@@ -13,9 +13,7 @@ public class LogicServer : MonoBehaviour
     public TextMeshProUGUI freqText;
     public static ulong ticks = 0;
     public CircuitDisplay mainCircuitDisplay;
-    public TimeSpan computeBudget = TimeSpan.FromMilliseconds(1);
-
-    public float simFrequency = 10.0f;
+    public TimeSpan computeBudget = TimeSpan.FromMilliseconds(2);
 
     private Queue<LogicEvent> eventQueue = new Queue<LogicEvent>();
     private Queue<Guid> gateQueue = new Queue<Guid>();
