@@ -6,7 +6,7 @@ using Utils;
 
 public class Clock : Primitive, ITickable {
 
-    public ulong period = 100000;
+    public ulong period = 50000;
 
     private ulong lastTick = 0;
 

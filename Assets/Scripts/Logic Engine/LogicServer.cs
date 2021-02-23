@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Diagnostics;
+using FullSerializer;
+using System.Text;
 
 public class LogicServer : MonoBehaviour
 {
@@ -20,43 +22,20 @@ public class LogicServer : MonoBehaviour
 
     private Circuit circuit = new Circuit("Main Circuit");
     Stopwatch precisionTimer = new Stopwatch();
+
+    private static fsSerializer _serializer = new fsSerializer();
     
 
     // Start is called before the first frame update
     void Awake()
     {
-        // Populate our circuit with primitives
-        Lever lever1 = new Lever("lever1");
-        lever1.position = new Vector2(100, -200);
-        circuit.Add(lever1);
+        Circuit loadedCircuit = Load();
 
-        Lever lever2 = new Lever("lever2");
-        lever2.position = new Vector2(100, -400);
-        circuit.Add(lever2);
-
-        Nand nand1 = new Nand("nand1");
-        nand1.position = new Vector2(300, -200);
-        circuit.Add(nand1);
-
-        Nand nand2 = new Nand("nand2");
-        nand2.position = new Vector2(300, -400);
-        circuit.Add(nand2);
-
-        //circuit.Connect(lever1, 0, nand1, 0);
-        //circuit.Connect(lever2, 0, nand2, 1);
-
-        circuit.Connect(nand1, 0, nand2, 0);
-        circuit.Connect(nand2, 0, nand1, 1);
-
-        Indicator ind1 = new Indicator("ind1");
-        ind1.position = new Vector2(500, -200);
-        circuit.Add(ind1);
-        circuit.Connect(nand1, 0, ind1, 0);
-
-        Indicator ind2 = new Indicator("ind2");
-        ind2.position = new Vector2(500, -400);
-        circuit.Add(ind2);
-        circuit.Connect(nand2, 0, ind2, 0);
+        if(loadedCircuit == null){
+            circuit = new Circuit("Main Circuit");
+        } else {
+            circuit = loadedCircuit;
+        }
 
         precisionTimer.Start();
 
@@ -65,6 +44,10 @@ public class LogicServer : MonoBehaviour
         mainCircuitDisplay.circuitSimObject = circuit;
 
         StartCoroutine(RunSimulation());
+    }
+
+    void OnDestroy(){
+        Save(circuit);
     }
 
     IEnumerator RunSimulation(){
@@ -81,14 +64,51 @@ public class LogicServer : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    // void Update()
-    // {
-        
-            
+    public void Save(Circuit c){
 
-    //     // UnityEngine.Debug.Log("notGate output: " + notGate.outputs[0].value);
-    //     // UnityEngine.Debug.Log("anotherGate output: " + anotherGate.outputs[0].value);
-    //     // UnityEngine.Debug.Log("yetAnotherGate output: " + yetAnotherGate.outputs[0].value);
-    // }
+        // Serialize circuit state.
+        fsSerializer _serializer = new fsSerializer();
+        fsData data;
+        try{
+            _serializer.TrySerialize(c.GetType(), c, out data).AssertSuccessWithoutWarnings();
+        } catch (Exception e){
+            UnityEngine.Debug.LogError("Failed to serialize: " + e.ToString());
+            return;
+        }
+
+        UnityEngine.Debug.Log(fsJsonPrinter.PrettyJson(data));
+        byte[] compressedJson = Encoding.UTF8.GetBytes(fsJsonPrinter.CompressedJson(data));
+
+        string destinationPath = Application.persistentDataPath + Path.DirectorySeparatorChar + "save.json";
+
+        FileStream saveFile;
+
+        if(File.Exists(destinationPath)){
+            File.Delete(destinationPath);
+        }
+        saveFile = File.Create(destinationPath);
+
+        saveFile.Write(compressedJson, 0, compressedJson.Length);
+
+        saveFile.Close();
+    }
+
+    public Circuit Load(){
+        string destinationPath = Application.persistentDataPath + Path.DirectorySeparatorChar + "save.json";
+
+        if(File.Exists(destinationPath) == false){
+            UnityEngine.Debug.Log("No save file found.");
+            return null;
+        }
+
+        string saveData = File.ReadAllText(destinationPath, Encoding.UTF8);
+
+        fsData parsedData = fsJsonParser.Parse(saveData);
+        // step 2: deserialize the data
+        object deserialized = null;
+        _serializer.TryDeserialize(parsedData, typeof(Circuit), ref deserialized).AssertSuccessWithoutWarnings();
+
+        return deserialized as Circuit;;
+    }
+
 }

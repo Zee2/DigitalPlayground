@@ -11,13 +11,16 @@ public class Circuit : Primitive
     public Dictionary<Guid, Primitive> gates = new Dictionary<Guid, Primitive>();
 
     // Internal compute queues
+    [SerializeField]
     Queue<LogicEvent> eventQueue = new Queue<LogicEvent>();
+    [SerializeField]
     HashSet<LogicEvent> eventQueueHashes = new HashSet<LogicEvent>();
+    [SerializeField]
     Queue<Guid> gateQueue = new Queue<Guid>();
-
+    [SerializeField]
     // hashset for quickly checking presence of gates in gatequeue
     HashSet<Guid> gateQueueHashes = new HashSet<Guid>();
-
+    [SerializeField]
     List<ITickable> tickables = new List<ITickable>();
 
     public Circuit(string name){

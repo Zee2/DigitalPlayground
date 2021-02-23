@@ -3,21 +3,47 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+[Serializable]
 public class Net
 {
     public Guid guid{get; set;}
     public List<Primitive> fanout = new List<Primitive>();
     public Primitive source;
     public bool value;
-
     public bool initFlag;
 
     public Net(){
         guid = Guid.NewGuid();
-
         // All new nets are flagged for initialization
         initFlag = true;
     }
+
+    // public void OnBeforeSerialize(){
+    //     guidString = guid.ToString();
+    //     sourceGuidString = (source?.guid ?? Guid.Empty).ToString() ;
+    //     fanoutGuids.Clear();
+    //     foreach(Primitive p in fanout){
+    //         fanoutGuids.Add(p.guid.ToString());
+    //     }
+    // }
+
+    // public void OnAfterDeserialize(){
+    //     guid = Guid.Parse(guidString);
+    //     // Call Hydrate() later, when primitive references
+    //     // have been populated.
+    // }
+    
+    // // Populate fanout and source with references to the relevant primitives
+    // public void Hydrate(Circuit hostCircuit){
+    //     fanout.Clear();
+    //     foreach(var fanoutGuid in fanoutGuids){
+    //         Guid g = Guid.Parse(fanoutGuid);
+    //         fanout.Add(g == Guid.Empty ? null : hostCircuit.gates[g]);
+    //     }
+
+    //     Guid sourceGuid = Guid.Parse(sourceGuidString);
+    //     source = sourceGuid == Guid.Empty ? null : hostCircuit.gates[sourceGuid];
+    // }
 
     // public void Compute(ref Queue<IComputable> computeQueue){
         

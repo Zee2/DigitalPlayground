@@ -288,6 +288,11 @@ public class CircuitDisplay : CircuitDevice
         PopulateWire(netGuid);
     }
 
+    // Update the location of the circuit device.
+    public void UpdateDeviceLocation(CircuitDevice circuitDevice){
+        circuitSimObject.gates[circuitDevice.associatedGuid].position = circuitDevice.transform.localPosition;  
+    }
+
     void UpdateWireValues(){
 
         // TODO: Replace with selective (viewport-local) update
@@ -303,7 +308,11 @@ public class CircuitDisplay : CircuitDevice
         foreach(var device in physicalDevices){
             var stagedOutputs = circuitSimObject.gates[device.Key].stagedOutputs;
             for(int i = 0; i < stagedOutputs.Count; i++){
-                device.Value.outputs[i].SetValue(stagedOutputs[i]);
+                try {
+                    device.Value.outputs[i].SetValue(stagedOutputs[i]);
+                } catch (Exception e){
+                    Debug.LogError($"i = {i}, Device type: {circuitSimObject.gates[device.Key].GetType()}, num stagedOutputs = {stagedOutputs.Count} error: {e.ToString()}");
+                }
             }
             (device.Value as IndicatorDevice)?.SetStatus(circuitSimObject.gates[device.Key].stagedOutputs[0]);
         }

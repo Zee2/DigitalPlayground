@@ -150,6 +150,9 @@ public class CircuitDevice : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             if(associatedGuid == Guid.Empty){
                 transform.GetComponentInParent<CircuitDisplay>().AddPhysicalGate(this);
             }
+
+            // Update our location within the circuit.
+            transform.GetComponentInParent<CircuitDisplay>().UpdateDeviceLocation(this);
         }
     }
 

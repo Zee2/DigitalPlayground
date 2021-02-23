@@ -4,12 +4,18 @@ using UnityEngine;
 using System;
 using Utils;
 
-public abstract class Primitive : IComputable
+public class Primitive : IComputable
 {
-    public Vector2 position {get; set;}
-    public Guid guid {get; set;}
-    public String name {get; set;}
+    [SerializeField]
+    public Vector2 position;
+    public Guid guid;
+
+    [SerializeField]
+    public String name;
+
+    [SerializeField]
     public LogicType logicType;
+    
     public List<Net> inputs;
     public List<Net> outputs;
 
@@ -17,8 +23,39 @@ public abstract class Primitive : IComputable
 
     public Circuit hostCircuit;
 
-    public abstract void Compute(Queue<Guid> parentGateQueue, Queue<LogicEvent> parentEventQueue);
-    
+    public virtual void Compute(Queue<Guid> parentGateQueue, Queue<LogicEvent> parentEventQueue) {
+
+    }
+
+    // public virtual void OnBeforeSerialize(){
+    //     guidString = guid.ToString();
+    //     inputNets.Clear();
+    //     outputNets.Clear();
+
+    //     Debug.Assert(inputs != null, "Inputs null on object name: " + name + ", type: " + this.GetType());
+    //     Debug.Assert(outputs != null, "Outputs null on object name: " + name + ", type: " + this.GetType());
+
+    //     foreach(Net n in inputs){
+    //         inputNets.Add(n?.guid.ToString() ?? Guid.Empty.ToString());
+    //     }
+    //     foreach(Net n in outputs){
+    //         outputNets.Add(n?.guid.ToString() ?? Guid.Empty.ToString());
+    //     }
+    // }
+
+    // public virtual void OnAfterDeserialize(){
+    //     guid = Guid.Parse(guidString);
+    // }
+
+    // public virtual void Hydrate(Circuit hostCircuit){
+    //     this.hostCircuit = hostCircuit;
+    //     inputs.Clear();
+    //     outputs.Clear();
+    //     foreach(var input in inputNets){
+    //         Guid g = Guid.Parse(input);
+    //         inputs.Add(g == Guid.Empty ? null : hostCircuit.nets[g]);
+    //     }
+    // }
 }
 
 public class Not : Primitive
@@ -32,7 +69,7 @@ public class Not : Primitive
         guid = Guid.NewGuid();
     }
     public override void Compute(Queue<Guid> parentGateQueue, Queue<LogicEvent> parentEventQueue){
-        
+
         if(inputs[0] != null) {
             stagedOutputs[0] = !inputs[0].value;
         }

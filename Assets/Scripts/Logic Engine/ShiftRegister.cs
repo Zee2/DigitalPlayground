@@ -6,11 +6,17 @@ using Utils;
 
 public class ShiftRegister : Primitive
 {
+    [SerializeField]
     bool lastClock;
+    [SerializeField]
     private int length = 4;
     public ShiftRegister(string name, int length){
+
+        // TODO: Variable width components
+        Debug.Assert(length == 4 || length == 8);
+
         this.length = length;
-        logicType = LogicType.ShiftRegister4;
+        logicType = length == 4 ? LogicType.ShiftRegister4 : LogicType.ShiftRegister8;
         inputs = new List<Net> { null, null };
 
         outputs = new List<Net>();
