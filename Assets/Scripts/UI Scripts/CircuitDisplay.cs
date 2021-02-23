@@ -26,6 +26,7 @@ public class CircuitDisplay : CircuitDevice
     public GameObject clockGate;
     public GameObject shiftRegister4Gate;
     public GameObject shiftRegister8Gate;
+    public GameObject dffGate;
     public GameObject subcircuitPrefab;
     public Circuit circuitSimObject;
 
@@ -165,6 +166,9 @@ public class CircuitDisplay : CircuitDevice
             case Utils.LogicType.ShiftRegister8:
                 prefabToUse = shiftRegister8Gate;
                 break;
+            case Utils.LogicType.DFF:
+                prefabToUse = dffGate;
+                break;
             default:
                 prefabToUse = null;
                 break;
@@ -231,6 +235,9 @@ public class CircuitDisplay : CircuitDevice
             case Utils.LogicType.ShiftRegister8:
                 newSimGate = new ShiftRegister("replaceMe", 8);
                 break;
+            case Utils.LogicType.DFF:
+                newSimGate = new DFF("replaceMe");
+                break;
             default:
                 Debug.LogError("Unknown circuit device type, object name: " + circuitDevice.gameObject.name);
                 return;
@@ -246,7 +253,7 @@ public class CircuitDisplay : CircuitDevice
 
     public void RemovePhysicalGate(CircuitDevice circuitDevice){
         
-        List<Guid> netsToUpdate = circuitSimObject.RemovePrimitive(circuitDevice.associatedGuid);
+        HashSet<Guid> netsToUpdate = circuitSimObject.RemovePrimitive(circuitDevice.associatedGuid);
         Debug.Log($"{netsToUpdate.Count} nets need updating");
         foreach(Guid netGuid in netsToUpdate){
             PopulateWire(netGuid);

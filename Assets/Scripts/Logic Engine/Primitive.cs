@@ -221,6 +221,6 @@ public class Indicator : Primitive{
     }
     public override void Compute(Queue<Guid> parentGateQueue, Queue<LogicEvent> parentEventQueue){
         stagedOutputs[0] = inputs[0]?.value ?? false;
-        Debug.Log("Computed indicator, new status = " + stagedOutputs[0]);
+        //Debug.Log("Computed indicator, new status = " + stagedOutputs[0]);
     }
 }

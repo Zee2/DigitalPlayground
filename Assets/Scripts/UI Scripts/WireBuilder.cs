@@ -111,9 +111,11 @@ public class WireBuilder : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             } else {
                 Debug.Log("CircuitDisplay says connection illegal");
             }
+        } else {
+            Debug.Log("Cancelling, invalid connection");
         }
+
         
-        Debug.Log("Cancelling, invalid connection");
         anchor.currentWireBuilder = null;
         Destroy(this.gameObject);
     }

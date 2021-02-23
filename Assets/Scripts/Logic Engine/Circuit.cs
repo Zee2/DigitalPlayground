@@ -91,12 +91,12 @@ public class Circuit : Primitive
         }
 
         // Check to see if net needs to be queued at sim init
-        if(src is Source){
+        // if(src is Source){
             eventQueue.Enqueue(new LogicEvent() {
-                netGuid = src.outputs[srcIndex].guid,
+                netGuid = netGuid,
                 newValue = src.outputs[srcIndex].value
             });
-        }
+        // }
 
         return netGuid;
     }
@@ -104,11 +104,11 @@ public class Circuit : Primitive
 
     // Removes a primitive and updates relevant nets. Returns a list of
     // all nets that were touched.
-    public List<Guid> RemovePrimitive(Guid guid){
+    public HashSet<Guid> RemovePrimitive(Guid guid){
         Primitive p = gates[guid];
 
-        List<Guid> netsToUpdate = new List<Guid>();
-        List<Guid> netsToDelete = new List<Guid>();
+        HashSet<Guid> netsToUpdate = new HashSet<Guid>();
+        HashSet<Guid> netsToDelete = new HashSet<Guid>();
         
         // Update inbound nets to no longer have this primitive as a fanout
         foreach(var inboundNet in p.inputs){
@@ -154,13 +154,19 @@ public class Circuit : Primitive
 
     public override void Compute(Queue<Guid> parentGateQueue, Queue<LogicEvent> parentEventQueue){
         
-        // Debug.Log("Event queue count: " + eventQueue.Count);
+        //Debug.Log("Event queue count: " + eventQueue.Count);
 
         // Flush event queue
         while(eventQueue.Count != 0){
             LogicEvent e = eventQueue.Dequeue();
             //Debug.Log("Dequeuing event");
             // Apply new net value from the logic event queue
+
+            if(nets.ContainsKey(e.netGuid) == false){
+                // The net was probably deleted.
+                continue;
+            }
+
             nets[e.netGuid].value = e.newValue;
 
             foreach(var gate in nets[e.netGuid].fanout){
@@ -169,9 +175,12 @@ public class Circuit : Primitive
                 // unless the gate is already present
                 if(!gateQueueHashes.Contains(gate.guid)){
                     gateQueue.Enqueue(gate.guid);
+                    gateQueueHashes.Add(gate.guid);
                 }
             }
         }
+
+        //Debug.Log("Gate queue count: " + gateQueue.Count);
 
         // Flush gate queue
         while(gateQueue.Count != 0){
