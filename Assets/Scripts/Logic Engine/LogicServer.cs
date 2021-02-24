@@ -62,6 +62,10 @@ public class LogicServer : MonoBehaviour
         }
     }
 
+    public void SaveMain(){
+        Save(circuit);
+    }
+
     public void Save(Circuit c){
 
         // Serialize circuit state.
